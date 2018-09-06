@@ -1,0 +1,24 @@
+# Set optimal IO schedulers for HDD and SSD
+
+ACTION!="add", GOTO="scheduler_end"
+SUBSYSTEM!="block", GOTO="scheduler_end"
+
+# Do not change scheduler if `elevator` cmdline parameter is set
+IMPORT{cmdline}="elevator"
+ENV{elevator}=="?*", GOTO="scheduler_end"
+
+# Determine if BLK-MQ is enabled
+TEST=="%S%p/mq", ENV{.IS_MQ}="1"
+
+# MQ: BFQ scheduler for HDD
+ENV{.IS_MQ}=="1", ATTR{queue/rotational}!="0", ATTR{queue/scheduler}="bfq"
+# MQ: deadline scheduler for SSD
+ENV{.IS_MQ}=="1", ATTR{queue/rotational}=="0", ATTR{queue/scheduler}="mq-deadline"
+
+# Non-MQ: CFQ scheduler for HDD
+ENV{.IS_MQ}!="1", ATTR{queue/rotational}!="0", ATTR{queue/scheduler}="cfq"
+# Non-MQ: deadline scheduler for SSD
+ENV{.IS_MQ}!="1", ATTR{queue/rotational}=="0", ATTR{queue/scheduler}="deadline"
+
+LABEL="scheduler_end"
+
