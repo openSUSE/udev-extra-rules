@@ -1,2 +1,2 @@
 # systemd-tuning-SUSE
-The project holds udev rules with SUSE specific tunings.
+The project holds SUSE specific tunings for hardware components.
