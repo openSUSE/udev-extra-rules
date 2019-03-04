@@ -14,7 +14,7 @@ SUBSYSTEM=="cpu", ACTION=="add", TEST=="online", ATTR{online}=="0", ATTR{online}
 # lot of shortcomings anyways (tmpfs mounted by other processes, mount
 # namespaces, ...)
 #
-SUBSYSTEM=="memory", ACTION=="add", PROGRAM=="/bin/sh -c '/usr/bin/systemd-detect-virt || :'", RESULT!="zvm", ATTR{state}=="offline", \
+SUBSYSTEM=="memory", ACTION=="add", PROGRAM=="/usr/bin/uname -m", RESULT!="s390x", ATTR{state}=="offline", \
   ATTR{state}="online", \
   RUN+="/bin/sh -c ' \
     while read src dst fs opts unused; do \
