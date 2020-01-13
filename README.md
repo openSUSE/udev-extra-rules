@@ -1,2 +1,2 @@
-# systemd-tuning-SUSE
-The project holds SUSE specific tunings for hardware components.
+# udev-extra-rules
+The project holds SUSE specific udev rules for hardware components.
