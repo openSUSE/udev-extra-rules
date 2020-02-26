@@ -10,10 +10,10 @@ ENV{elevator}=="?*", GOTO="scheduler_end"
 # Determine if BLK-MQ is enabled
 TEST=="%S%p/mq", ENV{.IS_MQ}="1"
 
-# MQ: BFQ scheduler for HDD
-ENV{.IS_MQ}=="1", ATTR{queue/rotational}!="0", ATTR{queue/scheduler}="bfq"
-# MQ: deadline scheduler for SSD
-ENV{.IS_MQ}=="1", ATTR{queue/rotational}=="0", ATTR{queue/scheduler}="mq-deadline"
+# MQ: BFQ scheduler for HDD (other than host-managed SMR)
+ENV{.IS_MQ}=="1", ATTR{queue/rotational}!="0", ATTR{queue/zoned}!="host-managed", ATTR{queue/scheduler}="bfq"
+# MQ: BFQ scheduler for SSD
+ENV{.IS_MQ}=="1", ATTR{queue/rotational}=="0", ATTR{queue/scheduler}="bfq"
 
 # Non-MQ: CFQ scheduler for HDD
 ENV{.IS_MQ}!="1", ATTR{queue/rotational}!="0", ATTR{queue/scheduler}="cfq"
