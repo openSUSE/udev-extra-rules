@@ -1,7 +1,8 @@
 # Set optimal IO schedulers for HDD and SSD
 
-ACTION!="add", GOTO="scheduler_end"
 SUBSYSTEM!="block", GOTO="scheduler_end"
+ACTION!="add", KERNEL!="dm-*", GOTO="scheduler_end"
+ACTION!="change", KERNEL=="dm-*", GOTO="scheduler_end"
 
 # Do not change scheduler if `elevator` cmdline parameter is set
 IMPORT{cmdline}="elevator"
