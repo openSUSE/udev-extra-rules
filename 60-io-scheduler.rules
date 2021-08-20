@@ -8,22 +8,11 @@ ATTR{queue/scheduler}=="none", GOTO="scheduler_end"
 # keep our hands off zoned devices, the kernel auto-configures them
 ATTR{queue/zoned}!="none", GOTO="scheduler_end"
 
-# Do not change scheduler if `elevator` cmdline parameter is set
-IMPORT{cmdline}="elevator"
-ENV{elevator}=="?*", GOTO="scheduler_end"
+# BFQ scheduler for HDD
+ATTR{queue/rotational}!="0", ATTR{queue/scheduler}="bfq"
 
-# Determine if BLK-MQ is enabled
-TEST=="%S%p/mq", ENV{.IS_MQ}="1"
-
-# MQ: BFQ scheduler for HDD
-ENV{.IS_MQ}=="1", ATTR{queue/rotational}!="0", ATTR{queue/scheduler}="bfq"
-# MQ: deadline scheduler for SSD
-ENV{.IS_MQ}=="1", ATTR{queue/rotational}=="0", ATTR{queue/scheduler}="mq-deadline"
-
-# Non-MQ: CFQ scheduler for HDD
-ENV{.IS_MQ}!="1", ATTR{queue/rotational}!="0", ATTR{queue/scheduler}="cfq"
-# Non-MQ: deadline scheduler for SSD
-ENV{.IS_MQ}!="1", ATTR{queue/rotational}=="0", ATTR{queue/scheduler}="deadline"
+# mq-deadline is the default anyway
+# ATTR{queue/rotational}=="0", ATTR{queue/scheduler}="mq-deadline"
 
 LABEL="scheduler_end"
 
