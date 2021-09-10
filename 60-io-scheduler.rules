@@ -17,6 +17,25 @@ ATTR{queue/zoned}!="none", GOTO="scheduler_end"
 
 # --- EDIT BELOW HERE after copying to /etc/udev/rules.d ---
 
+# Determine if BLK-MQ is enabled
+TEST=="%S%p/mq", GOTO="mq_scheduler"
+
+##### rules for Non-MQ #####
+
+# Do not change scheduler if `elevator` cmdline parameter is set
+IMPORT{cmdline}="elevator"
+ENV{elevator}=="?*", GOTO="scheduler_end"
+
+# CFQ scheduler for HDD
+ATTR{queue/rotational}!="0", ATTR{queue/scheduler}="cfq"
+# deadline scheduler for SSD
+ATTR{queue/rotational}=="0", ATTR{queue/scheduler}="deadline"
+
+GOTO="scheduler_end"
+
+#####   rules for MQ   #####
+LABEL="mq_scheduler"
+
 # 1. BFQ scheduler for single-queue HDD (uncomment if you comment out rule 2.+4.)
 # ATTR{queue/rotational}!="0", TEST!="%S%p/mq/1", ATTR{queue/scheduler}="bfq", GOTO="scheduler_end"
 
