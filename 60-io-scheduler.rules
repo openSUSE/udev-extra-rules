@@ -25,6 +25,8 @@ ATTR{queue/zoned}!="none", GOTO="scheduler_end"
 TEST=="%S%p/mq", GOTO="mq_scheduler"
 
 ##### rules for Non-MQ #####
+# Enforce "noop" for multipath components.
+ENV{DM_MULTIPATH_DEVICE_PATH}=="1", ATTR{queue/scheduler}="noop", GOTO="scheduler_end"
 
 # Do not change scheduler if `elevator` cmdline parameter is set
 IMPORT{cmdline}="elevator"
