@@ -9,13 +9,17 @@
 
 # --- DO NOT EDIT THIS PART ----
 SUBSYSTEM!="block", GOTO="scheduler_end"
-ACTION!="add", KERNEL!="dm-*", GOTO="scheduler_end"
+ACTION!="add|change", GOTO="scheduler_end"
+ENV{DEVTYPE}!="disk", GOTO="scheduler_end"
+
 # For dm devices, the relevant events are "change" events, see 10-dm.rules
 ACTION!="change", KERNEL=="dm-*", GOTO="scheduler_end"
 # "none" with no brackets means scheduler isn't configurable
 ATTR{queue/scheduler}=="none", GOTO="scheduler_end"
 # keep our hands off zoned devices, the kernel auto-configures them
 ATTR{queue/zoned}!="none", GOTO="scheduler_end"
+# Enforce "none" for multipath components.
+ENV{DM_MULTIPATH_DEVICE_PATH}=="1", ATTR{queue/scheduler}="none", GOTO="scheduler_end"
 
 # --- EDIT BELOW HERE after copying to /etc/udev/rules.d ---
 
