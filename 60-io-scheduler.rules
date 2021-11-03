@@ -17,11 +17,11 @@ ATTR{queue/zoned}!="none", GOTO="scheduler_end"
 
 # --- EDIT BELOW HERE after copying to /etc/udev/rules.d ---
 
-# 1. BFQ scheduler for single-queue HDD (uncomment if you comment out rule 2.+4.)
-# ATTR{queue/rotational}!="0", TEST!="%S%p/mq/1", ATTR{queue/scheduler}="bfq", GOTO="scheduler_end"
+# 1. BFQ scheduler for single-queue HDD
+ATTR{queue/rotational}!="0", TEST!="%S%p/mq/1", ATTR{queue/scheduler}="bfq", GOTO="scheduler_end"
 
-# 2. BFQ scheduler for every HDD (comment out if you uncomment rule 4.)
-ATTR{queue/rotational}!="0", ATTR{queue/scheduler}="bfq", GOTO="scheduler_end"
+# 2. BFQ scheduler for every HDD, including "real" multiqueue
+# ATTR{queue/rotational}!="0", ATTR{queue/scheduler}="bfq", GOTO="scheduler_end"
 
 # 3. For "real" multiqueue devices, the kernel defaults to no IO scheduling
 # Uncomment this (and select your scheduler) if you need an IO scheduler for them
