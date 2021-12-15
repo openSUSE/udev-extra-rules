@@ -27,6 +27,8 @@ TEST=="%S%p/mq", GOTO="mq_scheduler"
 ##### rules for Non-MQ #####
 # Enforce "noop" for multipath components.
 ENV{DM_MULTIPATH_DEVICE_PATH}=="1", ATTR{queue/scheduler}="noop", GOTO="scheduler_end"
+# Enforce "noop" for loop devices
+KERNEL=="loop[0-9]*", ATTR{queue/scheduler}="noop", GOTO="scheduler_end"
 
 # Do not change scheduler if `elevator` cmdline parameter is set
 IMPORT{cmdline}="elevator"
@@ -43,6 +45,8 @@ GOTO="scheduler_end"
 LABEL="mq_scheduler"
 # Enforce "none" for multipath components.
 ENV{DM_MULTIPATH_DEVICE_PATH}=="1", ATTR{queue/scheduler}="none", GOTO="scheduler_end"
+# Enforce "none" for loop devices
+KERNEL=="loop[0-9]*", ATTR{queue/scheduler}="none", GOTO="scheduler_end"
 
 # 1. BFQ scheduler for single-queue HDD
 ATTR{queue/rotational}!="0", TEST!="%S%p/mq/1", ATTR{queue/scheduler}="bfq", GOTO="scheduler_end"
