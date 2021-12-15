@@ -34,6 +34,10 @@ KERNEL=="loop[0-9]*", ATTR{queue/scheduler}="noop", GOTO="scheduler_end"
 IMPORT{cmdline}="elevator"
 ENV{elevator}=="?*", GOTO="scheduler_end"
 
+# Leave virtual devices untouched
+KERNEL=="vd[a-z]*", GOTO="scheduler_end"
+KERNEL=="xvd[a-z]*", GOTO="scheduler_end"
+
 # CFQ scheduler for HDD
 ATTR{queue/rotational}!="0", ATTR{queue/scheduler}="cfq"
 # deadline scheduler for SSD
@@ -47,6 +51,16 @@ LABEL="mq_scheduler"
 ENV{DM_MULTIPATH_DEVICE_PATH}=="1", ATTR{queue/scheduler}="none", GOTO="scheduler_end"
 # Enforce "none" for loop devices
 KERNEL=="loop[0-9]*", ATTR{queue/scheduler}="none", GOTO="scheduler_end"
+
+# --- EDIT BELOW HERE after copying to /etc/udev/rules.d ---
+
+# Uncomment these if you want to force virtual devices to use no scheduler
+# KERNEL=="vd[a-z]*", ATTR{queue/scheduler}="none", GOTO="scheduler_end"
+# KERNEL=="xvd[a-z]*", ATTR{queue/scheduler}="none", GOTO="scheduler_end"
+
+# Leave virtual devices untouched
+KERNEL=="vd[a-z]*", GOTO="scheduler_end"
+KERNEL=="xvd[a-z]*", GOTO="scheduler_end"
 
 # 1. BFQ scheduler for single-queue HDD
 ATTR{queue/rotational}!="0", TEST!="%S%p/mq/1", ATTR{queue/scheduler}="bfq", GOTO="scheduler_end"
